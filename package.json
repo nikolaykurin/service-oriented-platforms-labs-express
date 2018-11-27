@@ -1,0 +1,17 @@
+{
+  "name": "service-oriented-platforms-labs-express",
+  "version": "1.0.0",
+  "description": "Service-Oriented Platforms Labs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nikolaykurin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "soap": "^0.25.0"
+  }
+}
