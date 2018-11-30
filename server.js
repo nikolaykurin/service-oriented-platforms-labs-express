@@ -2,21 +2,31 @@ import express from 'express';
 import cors from 'cors';
 import { PORT } from './config';
 
-import { buildListQuery, createConnection } from './src/utils/mysql';
+import {
+  createConnection,
+  buildGetListQuery,
+  buildGetListSearchQuery,
+  buildGetOneQuery,
+  buildCreateQuery,
+  buildUpdateQuery,
+  buildDeleteQuery
+} from './src/utils/mysql';
 import models from './src/config/models';
 
 const app = express();
+import bodyParser from 'body-parser';
+
 app.use(cors());
 app.options('*', cors());
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
 
-// Квитанция, накладная, документ, счет
-// Receipt, invoice, document, bill
+app.get('/rest', (req, res) => {
+  const search = req.query.search;
 
-// https://github.com/vpulim/node-soap
-
-app.get('/list', (req, res) => {
   let data = {};
 
   const connection = createConnection();
@@ -27,9 +37,7 @@ app.get('/list', (req, res) => {
   models.forEach((model) => {
     async function getModelData() {
       return new Promise((resolve, reject) => {
-        connection.query(buildListQuery(model), function (error, rows, fields) {
-
-          console.log(rows);
+        connection.query(search ? buildGetListSearchQuery(model, search) : buildGetListQuery(model), function (error, rows, fields) {
 
           if (error) {
             reject(false);
@@ -47,16 +55,137 @@ app.get('/list', (req, res) => {
 
   Promise.all(promises)
     .then(() => {
-
       connection.end();
 
-      console.log(data);
-
       return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
     });
 });
 
-app.post('/create', (req, res) => {
-  const model = req.model;
-  return res.status(200);
+app.post('/rest', (req, res) => {
+  const model = req.body.model;
+  const data = req.body.item;
+
+  const connection = createConnection();
+
+  connection.connect();
+
+  async function createModel() {
+    return new Promise((resolve, reject) => {
+      connection.query(buildCreateQuery(model, data), function (error, rows, fields) {
+        if (error) {
+          reject(false);
+
+        }
+
+        resolve(true);
+      });
+    })
+  }
+
+  createModel()
+    .then((data) => {
+      connection.end();
+
+      return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+app.get('/rest/:model/:id', (req, res) => {
+  const model = req.params.model;
+  const id = req.params.id;
+
+  const connection = createConnection();
+
+  connection.connect();
+
+  async function getModelData() {
+    return new Promise((resolve, reject) => {
+      connection.query(buildGetOneQuery(model, id), function (error, rows, fields) {
+        if (error) {
+          reject(false);
+        }
+
+        resolve(JSON.parse(JSON.stringify(rows[0])));
+      });
+    });
+  }
+
+  getModelData()
+    .then((data) => {
+      connection.end();
+
+      return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+app.put('/rest', (req, res) => {
+  const model = req.body.model;
+  const data = req.body.item;
+
+  const connection = createConnection();
+
+  connection.connect();
+
+  async function createModel() {
+    return new Promise((resolve, reject) => {
+      connection.query(buildUpdateQuery(model, data), function (error, rows, fields) {
+        if (error) {
+          reject(false);
+
+        }
+
+        resolve(true);
+      });
+    })
+  }
+
+  createModel()
+    .then((data) => {
+      connection.end();
+
+      return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+});
+
+app.delete('/rest/:model/:id', (req, res) => {
+  const model = req.params.model;
+  const id = req.params.id;
+
+  const connection = createConnection();
+
+  connection.connect();
+
+  async function deleteModelItem() {
+    return new Promise((resolve, reject) => {
+      connection.query(buildDeleteQuery(model, id), function (error, rows, fields) {
+        if (error) {
+          reject(false);
+        }
+
+        resolve(true);
+      });
+    });
+  }
+
+  deleteModelItem()
+    .then((data) => {
+      connection.end();
+
+      return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
