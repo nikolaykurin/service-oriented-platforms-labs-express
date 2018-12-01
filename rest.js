@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { PORT } from './config';
+import bodyParser from 'body-parser';
+import { REST_PORT } from './config';
 
 import {
   createConnection,
@@ -14,7 +15,6 @@ import {
 import models from './src/config/models';
 
 const app = express();
-import bodyParser from 'body-parser';
 
 app.use(cors());
 app.options('*', cors());
@@ -22,7 +22,9 @@ app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.listen(PORT, () => console.log(`Example app listening on PORT ${PORT}!`));
+app.listen(REST_PORT, () => console.log(`Example app listening on PORT ${REST_PORT}!`));
+
+/* REST */
 
 app.get('/rest', (req, res) => {
   const search = req.query.search;
@@ -37,7 +39,7 @@ app.get('/rest', (req, res) => {
   models.forEach((model) => {
     async function getModelData() {
       return new Promise((resolve, reject) => {
-        connection.query(search ? buildGetListSearchQuery(model, search) : buildGetListQuery(model), function (error, rows, fields) {
+        connection.query(search ? buildGetListSearchQuery(model, search) : buildGetListQuery(model),  (error, rows, fields) => {
 
           if (error) {
             reject(false);
@@ -74,7 +76,7 @@ app.post('/rest', (req, res) => {
 
   async function createModel() {
     return new Promise((resolve, reject) => {
-      connection.query(buildCreateQuery(model, data), function (error, rows, fields) {
+      connection.query(buildCreateQuery(model, data), (error, rows, fields) => {
         if (error) {
           reject(false);
 
@@ -106,7 +108,7 @@ app.get('/rest/:model/:id', (req, res) => {
 
   async function getModelData() {
     return new Promise((resolve, reject) => {
-      connection.query(buildGetOneQuery(model, id), function (error, rows, fields) {
+      connection.query(buildGetOneQuery(model, id), (error, rows, fields) => {
         if (error) {
           reject(false);
         }
@@ -137,7 +139,7 @@ app.put('/rest', (req, res) => {
 
   async function createModel() {
     return new Promise((resolve, reject) => {
-      connection.query(buildUpdateQuery(model, data), function (error, rows, fields) {
+      connection.query(buildUpdateQuery(model, data), (error, rows, fields) => {
         if (error) {
           reject(false);
 
@@ -169,7 +171,7 @@ app.delete('/rest/:model/:id', (req, res) => {
 
   async function deleteModelItem() {
     return new Promise((resolve, reject) => {
-      connection.query(buildDeleteQuery(model, id), function (error, rows, fields) {
+      connection.query(buildDeleteQuery(model, id), (error, rows, fields) => {
         if (error) {
           reject(false);
         }

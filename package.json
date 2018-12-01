@@ -2,9 +2,10 @@
   "name": "service-oriented-platforms-labs-express",
   "version": "1.0.0",
   "description": "Service-Oriented Platforms Labs",
-  "main": "index.js",
+  "main": "index-rest.js",
   "scripts": {
-    "dev": "node index.js",
+    "rest": "node index-rest.js",
+    "soap": "node index-soap.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "nikolaykurin",
