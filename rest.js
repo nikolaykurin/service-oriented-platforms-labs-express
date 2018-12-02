@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { REST_PORT } from './config';
-
 import {
   createConnection,
   buildGetListQuery,
@@ -23,8 +22,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.listen(REST_PORT, () => console.log(`Example app listening on PORT ${REST_PORT}!`));
-
-/* REST */
 
 app.get('/rest', (req, res) => {
   const search = req.query.search;
@@ -66,6 +63,37 @@ app.get('/rest', (req, res) => {
     });
 });
 
+app.get('/rest/:model/:id', (req, res) => {
+  const model = req.params.model;
+  const id = req.params.id;
+
+  const connection = createConnection();
+
+  connection.connect();
+
+  async function getModelData() {
+    return new Promise((resolve, reject) => {
+      connection.query(buildGetOneQuery(model, id), (error, rows, fields) => {
+        if (error) {
+          reject(false);
+        }
+
+        resolve(JSON.parse(JSON.stringify(rows[0])));
+      });
+    });
+  }
+
+  getModelData()
+    .then((data) => {
+      connection.end();
+
+      return res.send({ data });
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
 app.post('/rest', (req, res) => {
   const model = req.body.model;
   const data = req.body.item;
@@ -88,37 +116,6 @@ app.post('/rest', (req, res) => {
   }
 
   createModel()
-    .then((data) => {
-      connection.end();
-
-      return res.send({ data });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
-
-app.get('/rest/:model/:id', (req, res) => {
-  const model = req.params.model;
-  const id = req.params.id;
-
-  const connection = createConnection();
-
-  connection.connect();
-
-  async function getModelData() {
-    return new Promise((resolve, reject) => {
-      connection.query(buildGetOneQuery(model, id), (error, rows, fields) => {
-        if (error) {
-          reject(false);
-        }
-
-        resolve(JSON.parse(JSON.stringify(rows[0])));
-      });
-    });
-  }
-
-  getModelData()
     .then((data) => {
       connection.end();
 

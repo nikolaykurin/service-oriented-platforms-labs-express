@@ -1,0 +1,129 @@
+<definitions name="HelloService"
+             targetNamespace="http://www.examples.com/wsdl/HelloService.wsdl"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://www.examples.com/wsdl/HelloService.wsdl"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <message name="getRequest">
+        <part name="search" type="xsd:string"/>
+    </message>
+
+    <message name="getResponse">
+        <part name="content" type="xsd:string"/>
+        <part name="data" type="xsd:string"/>
+        <part name="model" type="xsd:string"/>
+        <part name="id" type="xsd:integer"/>
+    </message>
+
+    <portType name="Hello_PortType">
+        <operation name="getList">
+            <input message="tns:getRequest"/>
+            <output message="tns:getResponse"/>
+        </operation>
+        <operation name="getItem">
+            <input message="tns:getRequest"/>
+            <output message="tns:getResponse"/>
+        </operation>
+        <operation name="createItem">
+            <input message="tns:getRequest"/>
+            <output message="tns:getResponse"/>
+        </operation>
+        <operation name="updateItem">
+            <input message="tns:getRequest"/>
+            <output message="tns:getResponse"/>
+        </operation>
+        <operation name="removeItem">
+            <input message="tns:getRequest"/>
+            <output message="tns:getResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="Hello_Binding" type="tns:Hello_PortType">
+        <soap:binding style="rpc"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getList">
+            <soap:operation soapAction="getList"/>
+            <input>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </output>
+        </operation>
+        <operation name="getItem">
+            <soap:operation soapAction="getItem"/>
+            <input>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </output>
+        </operation>
+        <operation name="createItem">
+            <soap:operation soapAction="createItem"/>
+            <input>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </output>
+        </operation>
+        <operation name="updateItem">
+            <soap:operation soapAction="updateItem"/>
+            <input>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </output>
+        </operation>
+        <operation name="removeItem">
+            <soap:operation soapAction="removeItem"/>
+            <input>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </input>
+            <output>
+                <soap:body
+                        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                        namespace="urn:examples:helloservice"
+                        use="encoded"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="SOAP_Service">
+        <documentation>WSDL File for HelloService</documentation>
+        <port binding="tns:Hello_Binding" name="SOAP_Port">
+            <soap:address
+                    location="http://localhost:8081/xml/" />
+        </port>
+    </service>
+</definitions>
